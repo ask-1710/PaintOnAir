@@ -6,8 +6,8 @@ cap.set(3, 320)
 cap.set(4, 320)
 cap.set(10, 500)
 
-# Use Object detection code to get the trackbar values for each color -> adjust trackbars
-# until only your color turns black
+# Use the color detection code to get the trackbar values for each color -> adjust trackbars
+# until only your color remains white while the other colours have turned black
 # orange -- black -- green -> order of colors
 myColors = [[0, 178, 111, 20, 255, 255],
             [63, 51, 0, 174, 239, 87],
@@ -16,7 +16,7 @@ myColors = [[0, 178, 111, 20, 255, 255],
 #  obtain BGR values for orange, black, green from websites like ' www.cloford.com/resources/colours/500col.htm '
 myColorValues = [[31, 90, 255], [0, 0, 0], [46, 255, 60]]
 
-myPoints = []  # [x,y,color id]
+myPoints = []  # [x-coordinate,y-coordinate,color index]
 
 
 def findColor(img, myColors, myColorValues):
@@ -42,7 +42,6 @@ def getContours(img):
     for cnt in contours:
         area = cv2.contourArea(cnt)
         if area > 500:
-            # cv2.drawContours(imgResult,cnt,-1,(255,0,0),3)
             per1 = cv2.arcLength(cnt, True)
             approx = (cv2.approxPolyDP(cnt, 0.02 * per1, True))
             x, y, w, z = cv2.boundingRect(approx)
@@ -61,10 +60,11 @@ while True:
     if len(newPoints) != 0:
         for newP in newPoints:
             myPoints.append(newP)
-    #  myPoints is used to retain the paint of every iteration
+    #  myPoints is used to retain the paint of the previous iterations
 
     if len(myPoints) != 0:
         drawOnCanvas(myPoints, myColorValues)
     cv2.imshow("Modern Art", imgResult)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
